@@ -2,4 +2,5 @@
 <resources>
     <string name="hello">Hello World, AsterDroid!\n</string>
     <string name="app_name">AsterDroid</string>
+    <string name="settings">AsterDroid Settings</string>
 </resources>

@@ -1,4 +1,4 @@
-package org.asterdroid.asterdroid;
+package org.asterdroid;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -41,8 +41,10 @@ public class AsterDroid extends Activity {
     
     static final int PICK_CONTACT_REQUEST = 0;
 
+    /*
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         tv.append("Press\n");
         return true;
     }
+    */
 }
