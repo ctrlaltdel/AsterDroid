@@ -1,11 +1,12 @@
 package org.asterdroid;
 
 import android.app.Activity;
+import android.app.Service;
 import android.content.Intent;
-import android.net.Uri;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
-import android.view.KeyEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -25,15 +26,17 @@ import org.jivesoftware.smack.util.StringUtils;
 public class AsterDroid extends Activity {
 	TextView tv = null;
     XMPPConnection connection;
+    private Service service; 
 	
     /** Called when the activity is first created. */
     @Override
     public void onCreate(Bundle savedInstanceState) {
-    	String host = "planete.ctrlaltdel.ch";
-    	String port = "5222";
-    	String service = "planete.ctrlaltdel.ch";
-    	String username = "phone1";
-    	String password = "phone1";
+    	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
+    	
+    	String host = prefs.getString("hostname", "");
+    	int port = Integer.parseInt(prefs.getString("port", "5222"));
+    	String username = prefs.getString("username", "");
+    	String password = prefs.getString("password", "");
     	
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main);
@@ -42,7 +45,7 @@ public class AsterDroid extends Activity {
                 
         // Create a connection
         ConnectionConfiguration connConfig =
-            new ConnectionConfiguration(host, Integer.parseInt(port), service);
+            new ConnectionConfiguration(host, port);
         connection = new XMPPConnection(connConfig);
 
         try {
@@ -96,6 +99,16 @@ public class AsterDroid extends Activity {
                 }
             }, filter);
         }
+        
+        // Settings button
+        Button settings = (Button) this.findViewById(R.id.Settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent();
+                myIntent.setClassName("org.asterdroid", "org.asterdroid.Settings");
+                startActivity(myIntent);    
+            }
+        });
     }
     
     public void onStart() {

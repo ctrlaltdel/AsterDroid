@@ -12,5 +12,9 @@ public class Notificator extends Service {
 		System.err.println("Service has started");
 		return null;
 	}
+	
+	public void onCreate() {
+		super.onCreate();
+	}
 
 }

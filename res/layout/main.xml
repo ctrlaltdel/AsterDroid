@@ -10,5 +10,6 @@
     android:text="@string/hello"
     android:id="@+id/my_text"/>
 
-<Button android:text="Button01" android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
+<Button android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Send stuff"></Button>
+<Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:id="@+id/Settings" android:text="Settings"></Button>
 </LinearLayout>

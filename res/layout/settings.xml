@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-  xmlns:android="http://schemas.android.com/apk/res/android"
-  android:layout_width="wrap_content"
-  android:layout_height="wrap_content">
-<TwoLineListItem android:id="@+id/TwoLineListItem01" android:layout_width="wrap_content" android:layout_height="wrap_content"></TwoLineListItem>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <EditTextPreference
+            android:key="hostname"
+            android:title="Hostname" />
+    
+    <EditTextPreference
+    		android:key="port"
+    		android:title="port" />
+    
+    <EditTextPreference
+    		android:key="username"
+    		android:title="Username" />
 
-
-<TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/settings"></TextView>
-<Button android:text="Button01" android:id="@+id/Button01" android:layout_width="wrap_content" android:layout_height="wrap_content"></Button>
-
-</LinearLayout>
+    <EditTextPreference
+    		android:key="password"
+    		android:title="Password" />
+</PreferenceScreen> 
