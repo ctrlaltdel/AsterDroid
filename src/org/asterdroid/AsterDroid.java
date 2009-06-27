@@ -22,6 +22,8 @@ public class AsterDroid extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
     	String host = "planete.ctrlaltdel.ch";
+    	String port = "5222";
+    	String service = "planete.ctrlaltdel.ch";
     	String username = "phone1";
     	String password = "phone1";
 
@@ -32,7 +34,9 @@ public class AsterDroid extends Activity {
         tv = (TextView) findViewById(R.id.my_text);
                 
         // Create a connection
-        connection = new XMPPConnection(host);
+        ConnectionConfiguration connConfig =
+            new ConnectionConfiguration(host, Integer.parseInt(port), service);
+        connection = new XMPPConnection(connConfig);
 
         try {
             connection.connect();
