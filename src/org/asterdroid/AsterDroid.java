@@ -1,7 +1,7 @@
 package org.asterdroid;
 
 import android.app.Activity;
-import android.app.Service;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -24,25 +24,46 @@ import org.jivesoftware.smack.util.StringUtils;
 
 
 public class AsterDroid extends Activity {
-	TextView tv = null;
+	TextView tv;
+	Context context;
     XMPPConnection connection;
-    private Service service; 
 	
     /** Called when the activity is first created. */
     @Override
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {    	
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.main);
+        
+        tv = (TextView) findViewById(R.id.my_text);
+        context = getApplicationContext();
+        
+        // Settings button
+        Button settings = (Button) this.findViewById(R.id.Settings);
+        settings.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+                Intent myIntent = new Intent();
+                myIntent.setClassName("org.asterdroid", "org.asterdroid.Settings");
+                startActivity(myIntent);    
+            }
+        });
+        
+        try {
+        	XMPPSetup();
+        } catch (Exception e) {
+            Intent myIntent = new Intent();
+            myIntent.setClassName("org.asterdroid", "org.asterdroid.Settings");
+            startActivity(myIntent);
+        }
+    }
+    
+    public void XMPPSetup() {
     	SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(this);
     	
     	String host = prefs.getString("hostname", "");
     	int port = Integer.parseInt(prefs.getString("port", "5222"));
     	String username = prefs.getString("username", "");
     	String password = prefs.getString("password", "");
-    	
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.main);
-        
-        tv = (TextView) findViewById(R.id.my_text);
-                
+
         // Create a connection
         ConnectionConfiguration connConfig =
             new ConnectionConfiguration(host, port);
@@ -94,45 +115,31 @@ public class AsterDroid extends Activity {
                     if (message.getBody() != null) {
                         String fromName = StringUtils.parseBareAddress(message.getFrom());
                         Log.i("XMPPClient", "Got text [" + message.getBody() + "] from [" + fromName + "]");
-                        tv.setText(message.getBody() + "\n");
+                        
+                        /*
+                        Toast.makeText(context, "SALUT", Toast.LENGTH_LONG).show();
+                        */
+                        
+                        Intent myIntent = new Intent();
+                        myIntent.setClassName("org.asterdroid", "org.asterdroid.IncomingCall");
+                        myIntent.putExtra("callerid", message.getBody());
+                        startActivity(myIntent);
+                        
+                        /*
+                        Intent myIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("tel:" + message.getBody()));
+                        startActivity(myIntent);
+                        */
                     }
                 }
             }, filter);
         }
-        
-        // Settings button
-        Button settings = (Button) this.findViewById(R.id.Settings);
-        settings.setOnClickListener(new View.OnClickListener() {
-            public void onClick(View view) {
-                Intent myIntent = new Intent();
-                myIntent.setClassName("org.asterdroid", "org.asterdroid.Settings");
-                startActivity(myIntent);    
-            }
-        });
-    }
-    
-    public void onStart() {
-    	super.onStart();
-    	tv.append("onStart()\n");
-    }
-    
-    public void onStop() {
-    	super.onStop();
-    	tv.append("onStop()\n");
-    }
-    
-    public void onResume() {
-    	super.onResume();
-    	tv.append("onResume()\n");
-    }
-    
-    public void onPause() {
-    	super.onPause();
-    	tv.append("onPause()\n");
     }
     
     public void onDestroy() {
     	super.onDestroy();
-    	connection.disconnect();
+    	
+    	if (connection != null) {
+    		connection.disconnect();
+    	}
     }
 }

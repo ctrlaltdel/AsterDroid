@@ -15,7 +15,8 @@
 
 		<activity android:name=".Settings">
 		</activity>
-	</application>
+	<activity android:launchMode="standard" android:name=".IncomingCall"></activity>
+</application>
     
     <uses-sdk android:minSdkVersion="3" />
  
