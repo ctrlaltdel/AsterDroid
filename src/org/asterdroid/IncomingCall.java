@@ -24,6 +24,7 @@ public class IncomingCall extends Activity {
         		new View.OnClickListener() {
         			public void onClick(View view) {
         				System.err.println("PICKUP GSM");
+        				Notificator.sendMessage("pickup_gsm");
         				finish();
         			}
         		});
@@ -32,6 +33,7 @@ public class IncomingCall extends Activity {
         		new View.OnClickListener() {
         			public void onClick(View view) {
         				System.err.println("PICKUP VOIP");
+        				Notificator.sendMessage("pickup_voip");
         				finish();
         			}
         		});
@@ -41,6 +43,7 @@ public class IncomingCall extends Activity {
         		new View.OnClickListener() {
         			public void onClick(View view) {
         				System.err.println("REJECT");
+        				Notificator.sendMessage("reject");
         				finish();
         			}
         		});

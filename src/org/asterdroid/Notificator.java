@@ -15,12 +15,11 @@ import android.app.Service;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.IBinder;
-import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Notificator extends Service {
-    XMPPConnection connection;
+    static XMPPConnection connection;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -100,6 +99,15 @@ public class Notificator extends Service {
         }
     }
 
+    public static void sendMessage(String text) {
+		String to = "asterisk@planete.ctrlaltdel.ch";
+
+		Log.i("XMPPClient", "Sending text [" + text + "] to [" + to + "]");
+		Message msg = new Message(to, Message.Type.chat);
+		msg.setBody(text);
+		connection.sendPacket(msg);
+    }
+    
     public void onDestroy() {
     	super.onDestroy();
    
