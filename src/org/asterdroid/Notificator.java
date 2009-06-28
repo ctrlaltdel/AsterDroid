@@ -81,18 +81,32 @@ public class Notificator extends Service {
                     Message message = (Message) packet;
                     if (message.getBody() != null) {
                         String fromName = StringUtils.parseBareAddress(message.getFrom());
-                        Log.i("XMPPClient", "Got text [" + message.getBody() + "] from [" + fromName + "]");
+                        String text = message.getBody();
                         
-                        Intent myIntent = new Intent();
-                        myIntent.setClassName("org.asterdroid", "org.asterdroid.IncomingCall");
-                        myIntent.putExtra("callerid", message.getBody());
-                        myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                        Log.i("XMPPClient", "Got text [" + text + "] from [" + fromName + "]");
                         
-                        Log.i("XMPPClient", "Intent is built: " + myIntent);
+                        /* Handle special ping packets */
+                        if (text.contains("ping")) {
+                        	Log.i("XMPPClient", "Ping received");
+                        	
+                        	try {
+                        		String timestamp = text.substring(5);
+                        		sendMessage("pong:" + timestamp);
+                        	} catch (Exception e) {
+                        		Log.e("XMPPClient", "Received invalid ping packet: " + text);
+                        	}
+                        } else {
+                        	Intent myIntent = new Intent();
+                        	myIntent.setClassName("org.asterdroid", "org.asterdroid.IncomingCall");
+                        	myIntent.putExtra("callerid", text);
+                        	myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         
-                        startActivity(myIntent);
+                        	Log.i("XMPPClient", "Intent is built: " + myIntent);
+                        
+                        	startActivity(myIntent);
                                                 
-                        Log.i("Incoming_call", "Activity should have been started");
+                        	Log.i("Incoming_call", "Activity should have been started");
+                        }
                     }
                 }
             }, filter);
