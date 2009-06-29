@@ -39,7 +39,7 @@ public class IncomingCall extends Activity {
         		});
         		
 
-        ((Button) this.findViewById(R.id.pickup_voip)).setOnClickListener(
+        ((Button) this.findViewById(R.id.reject)).setOnClickListener(
         		new View.OnClickListener() {
         			public void onClick(View view) {
         				System.err.println("REJECT");

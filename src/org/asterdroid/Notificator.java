@@ -128,7 +128,6 @@ public class Notificator extends Service {
                         } else {
                         	Intent myIntent = new Intent();
                         	myIntent.setClassName("org.asterdroid", "org.asterdroid.IncomingCall");
-                        	/* myIntent.setClassName("com.android.Phone", "com.android.Phone.InCallScreen"); */
                         	myIntent.putExtra("callerid", text);
                         	myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         
