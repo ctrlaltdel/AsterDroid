@@ -1,18 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-            android:key="hostname"
-            android:title="Hostname" />
-    
-    <EditTextPreference
-    		android:key="port"
-    		android:title="port" />
-    
-    <EditTextPreference
-    		android:key="username"
-    		android:title="Username" />
+	<PreferenceCategory android:title="@string/settings">
+		<EditTextPreference android:key="hostname"
+			android:title="Hostname" />
 
-    <EditTextPreference
-    		android:key="password"
-    		android:title="Password" />
+		<EditTextPreference android:key="port"
+			android:title="port" />
+
+		<EditTextPreference android:key="username"
+			android:title="Username" />
+
+		<EditTextPreference android:key="password"
+			android:title="Password" />
+	</PreferenceCategory>
 </PreferenceScreen> 

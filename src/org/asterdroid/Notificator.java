@@ -12,7 +12,10 @@ import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
 import android.app.Service;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.IBinder;
 import android.preference.PreferenceManager;
@@ -36,6 +39,33 @@ public class Notificator extends Service {
 	    } catch (Exception e) {
 	    	System.err.println("XMPPSetup failed");
 	    }
+	    
+	    /* Reconnect to the XMPP server on connection change */
+	    IntentFilter intentFilter = new IntentFilter("android.net.conn.CONNECTIVITY_CHANGE");
+
+	    BroadcastReceiver receiver = new BroadcastReceiver() {
+	          @Override
+	          public void onReceive(Context context, Intent intent) {
+	                Log.d("XMPPClient", "Service state changed");
+	        	    try {
+	        	    	XMPPSetup();
+	        	    } catch (Exception e) {
+	        	    	System.err.println("XMPPSetup failed");
+	        	    }
+	          };
+	    };
+
+	    registerReceiver(receiver, intentFilter);
+	    
+	    /* Test BroadcastReceiver */
+	    registerReceiver(
+	    		new BroadcastReceiver() {
+	    			public void onReceive(Context context, Intent intent) {
+	    				Log.d("XMPPClient", "Screen OFF");
+	    			};
+	    		},
+	    		new IntentFilter("android.intent.action.SCREEN_OFF")
+	    );
 	}
 	
     public void XMPPSetup() {
@@ -98,6 +128,7 @@ public class Notificator extends Service {
                         } else {
                         	Intent myIntent = new Intent();
                         	myIntent.setClassName("org.asterdroid", "org.asterdroid.IncomingCall");
+                        	/* myIntent.setClassName("com.android.Phone", "com.android.Phone.InCallScreen"); */
                         	myIntent.putExtra("callerid", text);
                         	myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         
@@ -106,6 +137,8 @@ public class Notificator extends Service {
                         	startActivity(myIntent);
                                                 
                         	Log.i("Incoming_call", "Activity should have been started");
+                        	
+                        	
                         }
                     }
                 }

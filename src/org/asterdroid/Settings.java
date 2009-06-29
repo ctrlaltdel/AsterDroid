@@ -9,5 +9,12 @@ public class Settings extends PreferenceActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         addPreferencesFromResource(R.layout.settings);
+        updateSummaries();
+    }
+
+    public void updateSummaries() {
+    	getPreferenceScreen().findPreference("username").setSummary(getPreferenceScreen().getSharedPreferences().getString("username", ""));
+    	getPreferenceScreen().findPreference("hostname").setSummary(getPreferenceScreen().getSharedPreferences().getString("hostname", ""));
+    	getPreferenceScreen().findPreference("port").setSummary(getPreferenceScreen().getSharedPreferences().getString("port", ""));
     }
 }
