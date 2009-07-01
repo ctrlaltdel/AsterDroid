@@ -17,17 +17,22 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.media.Ringtone;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.IBinder;
+import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
 public class Notificator extends Service {
     static XMPPConnection connection;
+    Context context;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
-		// TODO Auto-generated method stub
 		System.err.println("Service has started");
+		context = getApplicationContext();
 		return null;
 	}
 	
@@ -126,24 +131,47 @@ public class Notificator extends Service {
                         		Log.e("XMPPClient", "Received invalid ping packet: " + text);
                         	}
                         } else {
-                        	Intent myIntent = new Intent();
-                        	myIntent.setClassName("org.asterdroid", "org.asterdroid.IncomingCall");
-                        	myIntent.putExtra("callerid", text);
-                        	myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                        
-                        	Log.i("XMPPClient", "Intent is built: " + myIntent);
-                        
-                        	startActivity(myIntent);
-                                                
-                        	Log.i("Incoming_call", "Activity should have been started");
-                        	
-                        	
+                        	Log.i("Notificator", "Call handleIncomingCall");
+                        	handleIncomingCall(text);                        	
                         }
                     }
                 }
             }, filter);
         }
     }
+    
+	private void handleIncomingCall(String text) {
+		Log.i("Notificator", "Incoming call");
+
+		/* Vibrate */
+        try {
+        	Vibrator vb = ( Vibrator )getApplication().getSystemService( Service.VIBRATOR_SERVICE );
+        	vb.vibrate( new long[]{100,100,100,1000}, -1 );
+        } catch (Exception e) {
+        	Log.e("AsterDroid.Notificator", "Vibrate failed");
+        }
+        
+        /* Ring */
+        try {
+        	Uri defuri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE);
+        	Ringtone r = RingtoneManager.getRingtone(context, defuri); //where mContext is your Context object
+        	r.play();
+        } catch (Exception e) {
+        	Log.e("AsterDroid.Notificator", "Ring failed");
+        }
+
+        
+		Intent myIntent = new Intent();
+    	myIntent.setClassName("org.asterdroid", "org.asterdroid.IncomingCall");
+    	myIntent.putExtra("callerid", text);
+    	myIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+    
+    	Log.i("XMPPClient", "Intent is built: " + myIntent);
+    
+    	startActivity(myIntent);
+                            
+    	Log.i("Incoming_call", "Activity should have been started");
+	}
 
     public static void sendMessage(String text) {
 		String to = "asterisk@planete.ctrlaltdel.ch";
