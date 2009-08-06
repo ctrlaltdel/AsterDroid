@@ -1,17 +1,13 @@
 package org.asterdroid;
 
-import org.jivesoftware.smack.packet.Message;
-
 import android.app.Activity;
 import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
-import android.content.ServiceConnection;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import android.util.Log;
 
 public class AsterDroid extends Activity {
 	TextView tv;
@@ -45,6 +41,14 @@ public class AsterDroid extends Activity {
                 Intent myIntent = new Intent();
                 myIntent.setClassName("org.asterdroid", "org.asterdroid.Settings");
                 startActivity(myIntent);    
+            }
+        });
+        
+        // Settings button
+        Button exit = (Button) this.findViewById(R.id.Exit);
+        exit.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View view) {
+            	stopService(new Intent().setClassName("ord.asterdroid", "org.asterdroid.Notificator"));
             }
         });
         
