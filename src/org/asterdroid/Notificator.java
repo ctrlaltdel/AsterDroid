@@ -11,6 +11,9 @@ import org.jivesoftware.smack.packet.Packet;
 import org.jivesoftware.smack.packet.Presence;
 import org.jivesoftware.smack.util.StringUtils;
 
+import android.app.Notification;
+import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -28,6 +31,7 @@ import android.util.Log;
 public class Notificator extends Service {
     static XMPPConnection connection;
     Context context;
+    Notification notification;
 
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -38,11 +42,19 @@ public class Notificator extends Service {
 	
 	public void onCreate() {
 		super.onCreate();
+
+		try {
+			setNotification("BLAH");
+		} catch (Exception e) {
+			System.err.println("Notification initialization failed");
+			e.printStackTrace();
+		}
 		
 	    try {
 	    	XMPPSetup();
 	    } catch (Exception e) {
 	    	System.err.println("XMPPSetup failed");
+	    	e.printStackTrace();
 	    }
 	    
 	    /* Reconnect to the XMPP server on connection change */
@@ -53,7 +65,9 @@ public class Notificator extends Service {
 	          public void onReceive(Context context, Intent intent) {
 	                Log.d("XMPPClient", "Service state changed");
 	        	    try {
+	        	    	setNotification("Connecting...");
 	        	    	XMPPSetup();
+	        	    	setNotification("Connected!");
 	        	    } catch (Exception e) {
 	        	    	System.err.println("XMPPSetup failed");
 	        	    }
@@ -101,6 +115,8 @@ public class Notificator extends Service {
             // Set the status to available
             Presence presence = new Presence(Presence.Type.available);
             connection.sendPacket(presence);
+            
+            setNotification("Connected");
         } catch (XMPPException ex) {
             Log.e("XMPPClient", "Failed to log in as " + username);
             Log.e("XMPPClient", ex.toString());
@@ -188,5 +204,30 @@ public class Notificator extends Service {
     	if (connection != null) {
     		connection.disconnect();
     	}
+    }
+    
+    public void setNotification(CharSequence text) {
+    	// Get a reference to the NotificationManager: 
+    	String ns = Context.NOTIFICATION_SERVICE;
+    	NotificationManager mNotificationManager = (NotificationManager) getSystemService(ns);
+
+    	// Instantiate the Notification: 
+    	int icon = R.drawable.asterisk;        // icon from resources
+    	CharSequence tickerText = "AsterDroid is running";  // ticker-text
+    	long when = System.currentTimeMillis();         // notification time
+    	Context context = getApplicationContext();      // application Context
+    	CharSequence contentTitle = "AsterDroid";  // expanded message title
+    	CharSequence contentText = text;      // expanded message text
+
+    	Intent notificationIntent = new Intent(this, AsterDroid.class);
+    	PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent, 0);
+
+    	// the next two lines initialize the Notification, using the configurations above
+    	notification = new Notification(icon, tickerText, when);
+    	notification.setLatestEventInfo(context, contentTitle, contentText, contentIntent);
+    	notification.flags |= Notification.FLAG_ONGOING_EVENT;
+
+    	// Pass the Notification to the NotificationManager: 
+    	mNotificationManager.notify(1, notification);
     }
 }
